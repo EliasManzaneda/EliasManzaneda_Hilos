@@ -1,5 +1,6 @@
 package hilos.example.com.hilos;
 
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
@@ -70,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /*
     // 5_4
     class MiTarea extends AsyncTask<Integer, Void, Integer> {
         @Override
@@ -78,6 +80,43 @@ public class MainActivity extends AppCompatActivity {
         }
         @Override
         protected void onPostExecute(Integer res) {
+            salida.append(res + "\n");
+        }
+    }
+    */
+
+    // 5_5
+    class MiTarea extends AsyncTask<Integer, Integer, Integer> {
+        private ProgressDialog progreso;
+        @Override
+        protected void onPreExecute() {
+            progreso = new ProgressDialog(MainActivity.this);
+            progreso.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            progreso.setMessage("Calculando...");
+            progreso.setCancelable(false);
+            progreso.setMax(100);
+            progreso.setProgress(0);
+            progreso.show();
+        }
+        @Override
+        protected Integer doInBackground(Integer... n) {
+            Integer progreso = new Integer(0);
+            int res = 1;
+            for (int i = 1; i <= n[0]; i++) {
+                res *= i;
+                SystemClock.sleep(1000);
+                progreso = (i * 100) / n[0];
+                publishProgress(progreso);
+            }
+            return res;
+        }
+        @Override
+        protected void onProgressUpdate(Integer... porcentaje) {
+            progreso.setProgress(porcentaje[0]);
+        }
+        @Override
+        protected void onPostExecute(Integer res) {
+            progreso.dismiss();
             salida.append(res + "\n");
         }
     }
