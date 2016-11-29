@@ -17,11 +17,20 @@ public class MainActivity extends AppCompatActivity {
         entrada = (EditText) findViewById(R.id.entrada);
         salida = (TextView) findViewById(R.id.salida);
     }
+    /*
+    // 5_1
     public void calcularOperacion(View view) {
         int n = Integer.parseInt(entrada.getText().toString());
         salida.append(n + "! = ");
         int res = factorial(n);
         salida.append(res +"\n");
+    }
+    */
+    public void calcularOperacion(View view) {
+        int n = Integer.parseInt(entrada.getText().toString());
+        salida.append(n + "! = ");
+        MiThread thread = new MiThread(n);
+        thread.start();
     }
     public int factorial(int n) {
         int res = 1;
@@ -30,5 +39,32 @@ public class MainActivity extends AppCompatActivity {
             SystemClock.sleep(1000);
         }
         return res;
+    }
+
+    // 5_2
+    class MiThread extends Thread {
+        private int n, res;
+        public MiThread(int n) {
+            this.n = n;
+        }
+
+        @Override
+        public void run() {
+            res = factorial(n);
+            /*
+            // 5_2
+            salida.append(res + "\n");
+            */
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    salida.append(res + "\n");
+                }
+            });
+        }
+
+
+
+
     }
 }
